@@ -17,6 +17,7 @@ using AutoMapper;
 using ApiParking.Data.Area;
 using ApiParking.Data;
 using ApiParking.Data.KArea;
+using ApiParking.Data.Fees;
 
 namespace ApiParking
 {
@@ -41,6 +42,7 @@ namespace ApiParking
             //Service context
             services.AddScoped<IKAreaRepo, SqlKArea>();
             services.AddScoped<IAreaRepo, SqlArea>();
+            services.AddScoped<IFeesRepocs, SqlFees>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

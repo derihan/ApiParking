@@ -76,7 +76,9 @@ namespace ApiParking.Data
                     .HasColumnName("park_fees_sts")
                     .HasColumnType("int(3)");
 
-                entity.Property(e => e.ParkFeesValue).HasColumnName("park_fees_value");
+                entity.Property(e => e.ParkFeesValue)
+                    .HasColumnName("park_fees_value")
+                    .HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<MgIncome>(entity =>
