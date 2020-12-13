@@ -205,7 +205,7 @@ namespace ApiParking.Data
                 entity.Property(e => e.ParAreaId)
                     .IsRequired()
                     .HasColumnName("par_area_id")
-                    .HasColumnType("varchar(10)")
+                    .HasColumnType("int(10)")
                     .HasCharSet("latin1")
                     .HasCollation("latin1_swedish_ci");
 
@@ -218,7 +218,7 @@ namespace ApiParking.Data
                 entity.Property(e => e.ParkSlotStatus)
                     .IsRequired()
                     .HasColumnName("park_slot_status")
-                    .HasColumnType("varchar(2)")
+                    .HasColumnType("varchar(20)")
                     .HasCharSet("latin1")
                     .HasCollation("latin1_swedish_ci");
 
@@ -230,6 +230,7 @@ namespace ApiParking.Data
                     .IsRequired()
                     .HasColumnName("park_slot_user_id")
                     .HasColumnType("varchar(10)")
+                    .HasDefaultValue(null)
                     .HasCharSet("latin1")
                     .HasCollation("latin1_swedish_ci");
             });

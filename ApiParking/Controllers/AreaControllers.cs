@@ -1,9 +1,10 @@
 ﻿using ApiParking.Data.Area;
+using ApiParking.Data.Slot;
 using ApiParking.Models;
-
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using ApiParking.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,21 +14,23 @@ namespace ApiParking.Controllers
     [ApiController]
     public class AreaControllers : ControllerBase
     {
-
+        
         private readonly IAreaRepo _repository;
+        private readonly ISlotRepo _slotrepo;
         private string message;
         private int states;
+        private kparkingContext _context;
 
-        public AreaControllers(IAreaRepo repository)
+        public AreaControllers(IAreaRepo repository,ISlotRepo slotrepo,kparkingContext context)
         {
+            _context = context;
             _repository = repository;
-
+            _slotrepo = slotrepo;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<MgParkingArea>> GetAllArea()
         {
-
             var commandItems = _repository.GetAllArea();
             if (commandItems != null)
             {
@@ -51,23 +54,40 @@ namespace ApiParking.Controllers
 
         public ActionResult CreateArea(MgParkingArea mgParkingArea)
         {
-            if (ModelState.IsValid)
+            
+            var mark = _repository.CheckData(mgParkingArea.AreaNumber, mgParkingArea.AreaKategoriId);
+            if (mark == null)
             {
-                var mark = _repository.CheckData(mgParkingArea.AreaNumber, mgParkingArea.AreaKategoriId);
-
-                if (mark == null)
+                var trasnsaction = _context.Database.BeginTransaction();
+                try
                 {
                     _repository.CreateArea(mgParkingArea);
                     _repository.SaveChanges();
+                    var store = new Dictionary<string, int>();
+                    store.Add("ParAreaId", mgParkingArea.AreaId);
+                    _slotrepo.CreateSlot(store);
+                    trasnsaction.Commit();
+                    states = 1;
 
-                    return CreatedAtAction(nameof(GetAreaById), new { Id = mgParkingArea.AreaId }, mgParkingArea);
+                }
+                catch (Exception)
+                {
+                    trasnsaction.Rollback();
+                    states = 0;                
+                }
+
+                if (states == 1)
+                {
+                    return StatusCode(201, new { alert = "Add data successful" });
                 }
                 else
                 {
-                    return StatusCode(200, new { alert = "number exist on this room, try other number" });
+                    return StatusCode(400, new { alert = "Connection problem save data failed" });
                 }
+
             }
-            return NotFound();
+
+            return StatusCode(200, new { alert = "number exist on this room, try other number" });
         }
 
         [HttpPut("{id}")]

@@ -18,6 +18,7 @@ using ApiParking.Data.Area;
 using ApiParking.Data;
 using ApiParking.Data.KArea;
 using ApiParking.Data.Fees;
+using ApiParking.Data.Slot;
 
 namespace ApiParking
 {
@@ -39,10 +40,13 @@ namespace ApiParking
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            services.AddSignalR();
+
             //Service context
             services.AddScoped<IKAreaRepo, SqlKArea>();
             services.AddScoped<IAreaRepo, SqlArea>();
             services.AddScoped<IFeesRepocs, SqlFees>();
+            services.AddScoped<ISlotRepo, SqlSlots>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +65,7 @@ namespace ApiParking
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ServerHub>("/signal");
                 endpoints.MapControllers();
             });
         }
