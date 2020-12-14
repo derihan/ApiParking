@@ -22,6 +22,7 @@ namespace ApiParking.Data.Cars
             pslot.ParkCarLicence = data["platenum"];
             pslot.ParkCarUserId = data["userCars"];
             _context.MgParkingUserCar.Add(pslot);
+            _context.SaveChanges();
         }
 
         public bool SaveChanges()

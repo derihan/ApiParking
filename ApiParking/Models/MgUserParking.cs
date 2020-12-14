@@ -19,7 +19,7 @@ namespace ApiParking.Models
         
         [Timestamp]
         public DateTime UserCraetedAt { get; set; }
-        public int UsersSts { get; set; }
+        public int UsersSts { get; set; } = 2;
         [NotMapped]
         public string PlateNumber { get; set; }
 

@@ -21,7 +21,7 @@ namespace ApiParking.Data.User
             _repos.UserPassword = repos["password"];
             _repos.UserUsername = repos["username"];
             _context.MgUserParking.Add(_repos);
-            SaveChanges();
+            _context.SaveChanges();
             return _repos.UserId;
         }
 

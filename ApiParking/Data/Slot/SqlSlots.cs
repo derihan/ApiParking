@@ -46,7 +46,9 @@ namespace ApiParking.Data.Slot
             var store = _context.MgParkingSlot.Where(s => s.ParSlotId == data["slotId"]).First();
             store.ParkSlotUserId = Convert.ToString(data["carUserId"]);
             store.ParkSlotSts = 2;
-           
+            _context.SaveChanges();
+
+
         }
     }
 }

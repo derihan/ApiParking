@@ -8,7 +8,6 @@ namespace ApiParking.Data.User
     public interface IUserRepository
     {
         bool SaveChanges();
-
         int UserRegistration(Dictionary<string, string> data);
     }
 }
