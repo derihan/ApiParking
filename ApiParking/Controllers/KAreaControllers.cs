@@ -6,12 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiParking.Data.KArea;
 using ApiParking.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiParking.Controllers
 {
+    [Authorize]
     [Route("api/data-kategori")]
     [ApiController]
-
+    
     public class KAreaControllers : ControllerBase
     {
         private readonly IKAreaRepo _repository;

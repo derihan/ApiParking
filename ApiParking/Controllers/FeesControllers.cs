@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using ApiParking.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiParking.Controllers
 {
+    [Authorize]
     [Route("api/data-fees")]
     [ApiController]
     public class FeesControllers : ControllerBase

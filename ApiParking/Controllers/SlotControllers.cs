@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ApiParking.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiParking.Controllers
 {
+    [Authorize]
     [Route("api/data-slot")]
     [ApiController]
     public class SlotControllers : ControllerBase
