@@ -22,6 +22,10 @@ using ApiParking.Data.Slot;
 using ApiParking.Data.User;
 using ApiParking.Data.Cars;
 using ApiParking.Data.History;
+using ApiParking.Handler;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace ApiParking
 {
@@ -43,7 +47,34 @@ namespace ApiParking
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            services.AddCors(options => {
+                options.AddPolicy("CorsPlicy", 
+                    builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials().Build()
+                );
+            });
+
+            var key = Configuration.GetValue<string>("secret_key");
+            services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthentication(key));
             services.AddSignalR();
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+
+            });
+           
 
             //Service context
             services.AddScoped<IKAreaRepo, SqlKArea>();
@@ -66,8 +97,9 @@ namespace ApiParking
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {

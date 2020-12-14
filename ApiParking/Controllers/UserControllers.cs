@@ -9,9 +9,14 @@ using ApiParking.Models;
 using ApiParking.Data;
 using ApiParking.Data.Slot;
 using ApiParking.Data.History;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using ApiParking.Handler;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiParking.Controllers
 {
+    [Authorize]
     [Route("api/auth")]
     [ApiController]
     public class UserControllers : ControllerBase
@@ -21,25 +26,48 @@ namespace ApiParking.Controllers
         private readonly ISlotRepo _slotrepo;
         private readonly IHistoryRepocs _history;
         private readonly kparkingContext kparking;
+        private readonly IConfiguration _config;
+        private IJwtAuthenticationManager jwtAuth;
         private string message;
         private int states;
-        public UserControllers(IUserRepository repository, ICarsRepository carrepo, kparkingContext context, ISlotRepo slotrepo, IHistoryRepocs history)
+        public UserControllers(
+            IUserRepository repository, 
+            ICarsRepository carrepo, 
+            kparkingContext context, 
+            ISlotRepo slotrepo, 
+            IConfiguration config,
+            IHistoryRepocs history,
+            IJwtAuthenticationManager jwtauth
+            )
         {
             _repository = repository;
             _carrepo = carrepo;
             kparking = context;
             _slotrepo = slotrepo;
             _history = history;
+            _config = config;
+            jwtAuth = jwtauth;
         }
 
         //[HttpPost]
-        //[Route("login")]
-        //public async Task<ActionResult> login(MgUserParking userParking)
-        //{
-        //}
+        [AllowAnonymous]
+        [Route("login")]
+        public ActionResult login(MgUserParking user)
+        {
+         
+            var data = _repository.adminLogin(user.UserUsername, user.UserPassword);
+            var token = jwtAuth.Authenticate(data.UserUsername, data.UserPassword);
+
+            if (token == null)
+            {
+                return Unauthorized();
+            }
+            return Ok(token);
+           
+        }
 
         [HttpPost]
-        [Route("register")]
+        [Route("generate")]
         public  ActionResult generateQrcode(MgUserParking userParking)
         {
             var number_p = userParking.PlateNumber;

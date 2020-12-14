@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiParking.Models;
 
 namespace ApiParking.Data.User
 {
@@ -9,5 +10,7 @@ namespace ApiParking.Data.User
     {
         bool SaveChanges();
         int UserRegistration(Dictionary<string, string> data);
+
+        MgUserParking adminLogin(string username, string password);
     }
 }

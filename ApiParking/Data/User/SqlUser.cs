@@ -29,5 +29,10 @@ namespace ApiParking.Data.User
         {
             return (_context.SaveChanges() >= 0);
         }
+
+        public MgUserParking adminLogin(string username, string password)
+        {
+            return _context.MgUserParking.Where(s => s.UserUsername == username && s.UserPassword == password).FirstOrDefault();
+        }
     }
 }

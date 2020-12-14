@@ -7,9 +7,12 @@ using System.Collections.Generic;
 using ApiParking.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace ApiParking.Controllers
 {
+    [Authorize]
     [Route("api/data-area")]
     [ApiController]
     public class AreaControllers : ControllerBase
@@ -20,13 +23,20 @@ namespace ApiParking.Controllers
         private string message;
         private int states;
         private kparkingContext _context;
+        private IConfiguration _config;
 
-        public AreaControllers(IAreaRepo repository,ISlotRepo slotrepo,kparkingContext context)
+        public AreaControllers(
+            IAreaRepo repository,
+            ISlotRepo slotrepo,
+            kparkingContext context,
+            IConfiguration config
+            )
         {
             _context = context;
             _repository = repository;
             _slotrepo = slotrepo;
         }
+
 
         [HttpGet]
         public ActionResult<IEnumerable<MgParkingArea>> GetAllArea()
