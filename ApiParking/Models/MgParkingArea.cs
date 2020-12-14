@@ -22,7 +22,6 @@ namespace ApiParking.Models
         [Timestamp]
         public DateTime AreaCreatedAt { get; set; }
 
-        
         public int AreaSts { get; set; } = 1;
 
 

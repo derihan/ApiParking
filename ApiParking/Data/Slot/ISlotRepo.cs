@@ -11,6 +11,10 @@ namespace ApiParking.Data.Slot
         bool SaveChanges();
         IEnumerable<MgParkingSlot> GetAllSlot();
 
+        //IEnumerable<MgParkingSlot> checkAvailable();
+        MgParkingSlot checkAvailable();
         void CreateSlot(Dictionary<string, int> data);
+
+        void UpdateSlot(Dictionary<string, int> data);
     }
 }

@@ -19,6 +19,8 @@ using ApiParking.Data;
 using ApiParking.Data.KArea;
 using ApiParking.Data.Fees;
 using ApiParking.Data.Slot;
+using ApiParking.Data.User;
+using ApiParking.Data.Cars;
 
 namespace ApiParking
 {
@@ -47,6 +49,8 @@ namespace ApiParking
             services.AddScoped<IAreaRepo, SqlArea>();
             services.AddScoped<IFeesRepocs, SqlFees>();
             services.AddScoped<ISlotRepo, SqlSlots>();
+            services.AddScoped<IUserRepository, SqlUser>();
+            services.AddScoped<ICarsRepository, SqlCars>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

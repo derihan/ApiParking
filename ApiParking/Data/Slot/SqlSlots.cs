@@ -14,6 +14,11 @@ namespace ApiParking.Data.Slot
             _context = context;
         }
 
+        public MgParkingSlot checkAvailable()
+        {
+            return _context.MgParkingSlot.Where(a => a.ParkSlotSts == 1 && a.ParkSlotUserId == "" ).FirstOrDefault();
+        }
+
         public void CreateSlot(Dictionary<string, int> _data)
         {
             var pslot = new MgParkingSlot 
@@ -33,6 +38,15 @@ namespace ApiParking.Data.Slot
         public bool SaveChanges()
         {
             return (_context.SaveChanges() >= 0);
+        }
+
+        public void UpdateSlot(Dictionary<string, int> data)
+        {
+
+            var store = _context.MgParkingSlot.Where(s => s.ParSlotId == data["slotId"]).First();
+            store.ParkSlotUserId = Convert.ToString(data["carUserId"]);
+            store.ParkSlotSts = 2;
+           
         }
     }
 }

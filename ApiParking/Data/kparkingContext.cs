@@ -143,9 +143,9 @@ namespace ApiParking.Data
                     .HasColumnName("hist_sts")
                     .HasColumnType("int(2)");
 
-                entity.Property(e => e.ParkCarId)
+                entity.Property(e => e.ParkUserId)
                     .IsRequired()
-                    .HasColumnName("park_car_id")
+                    .HasColumnName("park_user_id")
                     .HasColumnType("varchar(2)")
                     .HasCharSet("latin1")
                     .HasCollation("latin1_swedish_ci");

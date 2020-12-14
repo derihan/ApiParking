@@ -45,7 +45,6 @@ namespace ApiParking.Controllers
         }
 
         [HttpPost]
-
         public ActionResult CreateFees(MdParkingFees parkingFees)
         {
             if (ModelState.IsValid)
