@@ -33,12 +33,13 @@ namespace ApiParking.Controllers
         }
 
         //[HttpPost]
-        //public async Task<ActionResult> regitrationUser(MgUserParking userParking)
+        //[Route("login")]
+        //public async Task<ActionResult> login(MgUserParking userParking)
         //{
-        //    for admin only
         //}
 
         [HttpPost]
+        [Route("register")]
         public  ActionResult generateQrcode(MgUserParking userParking)
         {
             var number_p = userParking.PlateNumber;
@@ -49,8 +50,6 @@ namespace ApiParking.Controllers
 
             if ( comdDlot != null)
             {
-               
-
                 if (String.IsNullOrEmpty(number_p))
                 {
                     return StatusCode(200, new { data = "Sory license plat cannot be null", state = 0 });
