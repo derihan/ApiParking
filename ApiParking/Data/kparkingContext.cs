@@ -21,7 +21,7 @@ namespace ApiParking.Data
         public virtual DbSet<MgParkingSlot> MgParkingSlot { get; set; }
         public virtual DbSet<MgParkingUserCar> MgParkingUserCar { get; set; }
         public virtual DbSet<MgUserParking> MgUserParking { get; set; }
-
+        public virtual DbSet<ParkingOtp> ParkingOtp { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -52,6 +52,36 @@ namespace ApiParking.Data
 
                 entity.Property(e => e.KatAreaSts)
                     .HasColumnName("kat_area_sts")
+                    .HasColumnType("int(2)");
+            });
+
+            modelBuilder.Entity<ParkingOtp>(entity =>
+            {
+                entity.HasKey(e => e.OtpId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("praking_otp");
+
+                entity.Property(e => e.OtpId)
+                   .HasColumnName("otp_id")
+                   .HasColumnType("int(11)");
+
+                entity.Property(e => e.OtpKode)
+                    .HasColumnName("otp_kode")
+                    .HasColumnType("int(7)");
+
+                entity.Property(e => e.OtpUserId)
+                    .HasColumnName("otp_user_id")
+                    .HasColumnType("int(4)");
+
+                entity.Property(e => e.Created)
+                    .HasColumnName("created")
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.OtpSts)
+                    .HasColumnName("otp_sts")
                     .HasColumnType("int(2)");
             });
 

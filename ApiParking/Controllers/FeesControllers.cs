@@ -26,7 +26,6 @@ namespace ApiParking.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<MdParkingFees>> GetAllArea()
         {
-
             var commandItems = _repository.GetAllFees();
             if (commandItems != null)
             {

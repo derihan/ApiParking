@@ -13,6 +13,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using ApiParking.Handler;
 using Microsoft.AspNetCore.Authorization;
+using BCrypt.Net;
 
 namespace ApiParking.Controllers
 {
@@ -21,12 +22,13 @@ namespace ApiParking.Controllers
     [ApiController]
     public class UserControllers : ControllerBase
     {
+        private IConfiguration _config { get; }
+
         private readonly IUserRepository _repository;
         private readonly ICarsRepository _carrepo;
         private readonly ISlotRepo _slotrepo;
         private readonly IHistoryRepocs _history;
         private readonly kparkingContext kparking;
-        private readonly IConfiguration _config;
         private IJwtAuthenticationManager jwtAuth;
         private string message;
         private int states;
@@ -54,24 +56,43 @@ namespace ApiParking.Controllers
         [Route("login")]
         public ActionResult login(MgUserParking user)
         {
-         
-            var data = _repository.adminLogin(user.UserUsername, user.UserPassword);
-            var token = jwtAuth.Authenticate(data.UserUsername, data.UserPassword);
-
-            if (token == null)
+            if (user != null)
             {
-                return Unauthorized();
+                var data = _repository.adminLogin(user.UserUsername, user.UserPassword);
+                if (data != null)
+                {
+                    var token = jwtAuth.Authenticate(data.UserUsername, data.UserPassword);
+                    if (token == null)
+                    {
+                        return Unauthorized();
+                    }
+                    return Ok(token);
+                }
+                return NotFound();
             }
-            return Ok(token);
-           
+            else
+            {
+                return NotFound();
+            }
+
         }
 
+       
+        //[Route("generate")]
+        //public ActionResult scanningQr()
+        //{
+
+        //}
+
+        [AllowAnonymous]
         [HttpPost]
         [Route("generate")]
         public  ActionResult generateQrcode(MgUserParking userParking)
         {
+            Random rand = new Random();
             var number_p = userParking.PlateNumber;
             var password_b = userParking.UserPassword;
+            var password_hash = BCrypt.Net.BCrypt.HashPassword(password_b, 12);
             var username = userParking.UserUsername;
 
             var comdDlot = _slotrepo.checkAvailable();
@@ -80,17 +101,22 @@ namespace ApiParking.Controllers
             {
                 if (String.IsNullOrEmpty(number_p))
                 {
-                    return StatusCode(200, new { data = "Sory license plat cannot be null", state = 0 });
+                    return StatusCode(200, new { data = "Sory license number cannot be null", state = 0 });
                 }
                 var transaction = kparking.Database.BeginTransaction();
                 try
                 {
+
+
                     //add data user table
                     var store = new Dictionary<string, string>();
                     store.Add("plat", number_p);
                     store.Add("username", username);
-                    store.Add("password", password_b);
+                    store.Add("password", password_hash);
                     var dc = _repository.UserRegistration(store);
+
+                    //insert to otp
+                    var kodeOtp = _repository.createOtp(dc);
 
                     //add data to car table
                     var plates = new Dictionary<string, string>();
@@ -112,7 +138,9 @@ namespace ApiParking.Controllers
                    
                     transaction.Commit();
                     states = 1;
-                    message = "save data success";
+
+                    return StatusCode(201, new {user = username, kode = kodeOtp});
+                   
                 }
                 catch (Exception)
                 {

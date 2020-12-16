@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using ApiParking.Models;
+
 
 namespace ApiParking.Data.User
 {
@@ -33,6 +35,33 @@ namespace ApiParking.Data.User
         public MgUserParking adminLogin(string username, string password)
         {
             return _context.MgUserParking.Where(s => s.UserUsername == username && s.UserPassword == password).FirstOrDefault();
+        }
+
+        private static string GenerateNewRandom()
+        {
+            Random generator = new Random();
+            String r = generator.Next(0, 1000000).ToString("D6");
+            if (r.Distinct().Count() == 1)
+            {
+                r = GenerateNewRandom();
+            }
+            return r;
+        }
+
+        public string createOtp(int userId)
+        {
+
+            var kode = Convert.ToInt32(GenerateNewRandom());
+            var otp = new ParkingOtp();
+            otp.OtpKode = kode;
+            otp.OtpUserId = userId;
+
+            _context.ParkingOtp.Add(otp);
+            _context.SaveChanges();
+
+            var plain = Encoding.UTF8.GetBytes(Convert.ToString(kode));
+
+            return Convert.ToBase64String(plain);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApiParking.Models
 {
@@ -24,7 +25,9 @@ namespace ApiParking.Models
 
         public int AreaSts { get; set; } = 1;
 
-
+        [NotMapped]
+        public string kategori { get; set; }
+        public int FessVal { get; set; }
 
     }
 }

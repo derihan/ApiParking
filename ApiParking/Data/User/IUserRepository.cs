@@ -11,6 +11,8 @@ namespace ApiParking.Data.User
         bool SaveChanges();
         int UserRegistration(Dictionary<string, string> data);
 
+        string createOtp(int userId);
+
         MgUserParking adminLogin(string username, string password);
     }
 }

@@ -25,9 +25,47 @@ namespace ApiParking.Data.Area
             _context.MgParkingArea.Add(areas_m);
         }
 
-        public IEnumerable<MgParkingArea> GetAllArea()
+        public List<MgParkingArea> GetAllArea()
         {
-            return _context.MgParkingArea.ToList();
+            List<MgParkingArea> genericArea = new List<MgParkingArea>();
+            MgParkingArea areaObject;
+            var areadata = _context.MgParkingArea
+                    .Join(_context.MdKategoriArea,
+                        tbarea => tbarea.AreaKategoriId, 
+                        tbkat => tbkat.KatiAreaId,
+                        (tbarea, tbkat) => new
+                        {
+                            AreaId = tbarea.AreaId,
+                            AreaNumber = tbarea.AreaNumber,
+                            Kategori = tbkat.KatAreaName,
+                            FeesId = tbarea.AreaParkingFeesId,
+                            AreaCreatedAt = tbarea.AreaCreatedAt,
+                        })
+                    .Join(_context.MdParkingFees, 
+                        a => a.FeesId,
+                        b => b.ParkFeesId,
+                        (a, b) => new
+                        {
+                            AreaId = a.AreaId,
+                            AreaNumber = a.AreaNumber,
+                            FeesValue = b.ParkFeesValue,
+                            Kategori = a.Kategori,
+                            AreaCreatedAt = a.AreaCreatedAt
+                        }).ToList();
+
+            foreach (var item in areadata)
+            {
+                areaObject = new MgParkingArea
+                {
+                    AreaId = item.AreaId,
+                    AreaNumber = item.AreaNumber,
+                    AreaCreatedAt = item.AreaCreatedAt,
+                    kategori = item.Kategori,
+                    FessVal = item.FeesValue
+                };
+                genericArea.Add(areaObject);
+            }
+            return genericArea;
         }
 
         public MgParkingArea GetAreaById(int id)

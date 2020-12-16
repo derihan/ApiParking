@@ -8,7 +8,7 @@ namespace ApiParking.Data.Area
     public interface IAreaRepo
     {
         bool SaveChanges();
-        IEnumerable<MgParkingArea> GetAllArea();
+        List<MgParkingArea> GetAllArea();
         MgParkingArea GetAreaById(int id);
         void CreateArea(MgParkingArea mg_areas);
         MgParkingArea CheckData(int number, int katid);
