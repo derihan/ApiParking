@@ -29,7 +29,7 @@ namespace ApiParking.Controllers
             var commandItems = _repository.GetAllFees();
             if (commandItems != null)
             {
-                return Ok(commandItems);
+                return StatusCode(200, new { data = commandItems });
             }
             return NotFound();
         }

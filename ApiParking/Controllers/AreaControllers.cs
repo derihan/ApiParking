@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ApiParking.Controllers
 {
-   
+    [Authorize]
     [Route("api/data-area")]
     [ApiController]
     public class AreaControllers : ControllerBase
@@ -44,7 +44,7 @@ namespace ApiParking.Controllers
             var commandItems = _repository.GetAllArea();
             if (commandItems != null)
             {
-                return Ok(commandItems);
+                return StatusCode(200, new { data = commandItems });
             }
             return NotFound();
         }

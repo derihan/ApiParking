@@ -27,6 +27,8 @@ namespace ApiParking.Models
 
         [NotMapped]
         public string kategori { get; set; }
+
+        [NotMapped]
         public int FessVal { get; set; }
 
     }
