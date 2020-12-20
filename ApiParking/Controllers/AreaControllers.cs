@@ -55,7 +55,7 @@ namespace ApiParking.Controllers
             var commandItems = _repository.GetAreaById(id);
             if (commandItems != null)
             {
-                return Ok(commandItems);
+                return StatusCode(200, commandItems);
             }
             return NotFound();
         }
@@ -158,18 +158,11 @@ namespace ApiParking.Controllers
             {
                 _repository.DeleteArea(commandItems);
                 var mpck = _repository.SaveChanges();
-
                 if (mpck)
                 {
-                    message = "delete data succesfull";
-                    states = 200;
+                    return Ok(new { alert = "sukses" });
                 }
-                else
-                {
-                    message = "delete data failed";
-                    states = 404;
-                }
-                return StatusCode(states, new { alert = message });
+                return StatusCode(200, new { alert = "failed" });
             }
            
         }

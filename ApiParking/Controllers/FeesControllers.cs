@@ -125,15 +125,10 @@ namespace ApiParking.Controllers
 
                 if (mpck)
                 {
-                    message = "delete data succesfull";
-                    states = 200;
+                    return Ok(new { alert = true });
                 }
-                else
-                {
-                    message = "delete data failed";
-                    states = 404;
-                }
-                return StatusCode(states, new { alert = message });
+
+                return NotFound();
             }
 
         }
