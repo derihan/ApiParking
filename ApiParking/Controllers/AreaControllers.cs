@@ -24,6 +24,7 @@ namespace ApiParking.Controllers
         private int states;
         private kparkingContext _context;
         private IConfiguration _config;
+        private MgParkingArea getItem;
 
         public AreaControllers(
             IAreaRepo repository,
@@ -68,6 +69,7 @@ namespace ApiParking.Controllers
             var mark = _repository.CheckData(mgParkingArea.AreaNumber, mgParkingArea.AreaKategoriId);
             if (mark == null)
             {
+               
                 var trasnsaction = _context.Database.BeginTransaction();
                 try
                 {
@@ -75,6 +77,7 @@ namespace ApiParking.Controllers
                     _repository.SaveChanges();
                     var store = new Dictionary<string, int>();
                     store.Add("ParAreaId", mgParkingArea.AreaId);
+                    getItem = _repository.GetAreaById(mgParkingArea.AreaId);
                     _slotrepo.CreateSlot(store);
                     trasnsaction.Commit();
                     states = 1;
@@ -88,16 +91,16 @@ namespace ApiParking.Controllers
 
                 if (states == 1)
                 {
-                    return StatusCode(201, new { alert = "Add data successful" });
+                    return StatusCode(201, new { alert = "Add data successful", data = getItem });
                 }
                 else
                 {
-                    return StatusCode(400, new { alert = "Connection problem save data failed" });
+                    return StatusCode(404, new { alert = "Connection problem save data failed" });
                 }
 
             }
 
-            return StatusCode(200, new { alert = "number exist on this room, try other number" });
+            return StatusCode(404, new { alert = "number exist on this room, try other number" });
         }
 
         [HttpPut("{id}")]

@@ -70,7 +70,37 @@ namespace ApiParking.Data.Area
 
         public MgParkingArea GetAreaById(int id)
         {
-            return _context.MgParkingArea.FirstOrDefault(p => p.AreaId == id);
+            var areadata = _context.MgParkingArea
+                   .Join(_context.MdKategoriArea,
+                       tbarea => tbarea.AreaKategoriId,
+                       tbkat => tbkat.KatiAreaId,
+                       (tbarea, tbkat) => new
+                       {
+                           AreaId = tbarea.AreaId,
+                           AreaNumber = tbarea.AreaNumber,
+                           Kategori = tbkat.KatAreaName,
+                           FeesId = tbarea.AreaParkingFeesId,
+                           AreaCreatedAt = tbarea.AreaCreatedAt,
+                       })
+                   .Join(_context.MdParkingFees,
+                       a => a.FeesId,
+                       b => b.ParkFeesId,
+                       (a, b) => new
+                       {
+                           AreaId = a.AreaId,
+                           AreaNumber = a.AreaNumber,
+                           FeesValue = b.ParkFeesValue,
+                           Kategori = a.Kategori,
+                           AreaCreatedAt = a.AreaCreatedAt
+                       }).Where(p => p.AreaId == id).FirstOrDefault();
+
+            return new MgParkingArea
+            {
+                AreaId = areadata.AreaId,
+                AreaNumber = areadata.AreaNumber,
+                kategori = areadata.Kategori,
+                FessVal = areadata.FeesValue
+            };
         }
 
         
