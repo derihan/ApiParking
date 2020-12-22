@@ -123,13 +123,15 @@ namespace ApiParking.Data.Area
            
         }
 
-        public void DeleteArea(MgParkingArea mgParking)
+        public bool DeleteArea(int id)
         {
-            if (mgParking == null)
+            var data = _context.MgParkingArea.First(a => a.AreaId == id);
+            if (data != null)
             {
-                throw new ArgumentNullException(nameof(mgParking));
+                _context.MgParkingArea.Remove(data);
+                return SaveChanges();
             }
-            _context.MgParkingArea.Remove(mgParking);
+            return false;
         }
     }
 }

@@ -13,6 +13,6 @@ namespace ApiParking.Data.Area
         void CreateArea(MgParkingArea mg_areas);
         MgParkingArea CheckData(int number, int katid);
         void UpdateArea(Dictionary<String, int> data);
-        void DeleteArea(MgParkingArea mgParking);
+        bool DeleteArea(int id);
     }
 }

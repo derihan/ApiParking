@@ -95,12 +95,12 @@ namespace ApiParking.Controllers
                 }
                 else
                 {
-                    return StatusCode(404, new { alert = "Connection problem save data failed" });
+                    return NotFound();
                 }
 
             }
 
-            return StatusCode(404, new { alert = "number exist on this room, try other number" });
+            return NotFound();
         }
 
         [HttpPut("{id}")]
@@ -150,25 +150,25 @@ namespace ApiParking.Controllers
         }
 
         [HttpDelete("{id}")]
+
         public ActionResult DeleteArea(int id)
         {
-            var commandItems = _repository.GetAreaById(id);
-            if (commandItems == null)
+           
+            if (String.IsNullOrEmpty(Convert.ToString(id)))
             {
-                return NotFound();
+                return StatusCode(200, new { alert = "failed" });
             }
             else
             {
-                _repository.DeleteArea(commandItems);
-                var mpck = _repository.SaveChanges();
+                var mpck = _repository.DeleteArea(id);
                 if (mpck)
                 {
                     return Ok(new { alert = "sukses" });
                 }
                 return StatusCode(200, new { alert = "failed" });
             }
-           
+
         }
-            
+
     }
 }
