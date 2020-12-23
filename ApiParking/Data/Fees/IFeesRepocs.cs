@@ -10,6 +10,8 @@ namespace ApiParking.Data.Fees
     {
         bool SaveChanges();
         IEnumerable<MdParkingFees> GetAllFees();
+
+        List<SelectedItemFee> GetToArray();
         MdParkingFees GetFeesById(int id);
         void CreateFees(MdParkingFees mdParking);
         MdParkingFees CheckFees(int feesValue);

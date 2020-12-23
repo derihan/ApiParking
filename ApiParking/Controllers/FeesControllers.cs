@@ -34,6 +34,19 @@ namespace ApiParking.Controllers
             return NotFound();
         }
 
+        [HttpGet("item")]
+        public ActionResult<IEnumerable<MdParkingFees>> SelcetedItem()
+        {
+            var commandItems = _repository.GetToArray();
+
+            if (commandItems == null)
+            {
+                return NotFound();
+            }
+            
+            return StatusCode(200, new { data = commandItems });
+        }
+
         [HttpGet("{id}", Name = "GetFeesById")]
         public ActionResult GetFeesById(int id)
         {

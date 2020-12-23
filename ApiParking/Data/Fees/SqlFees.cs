@@ -48,6 +48,11 @@ namespace ApiParking.Data.Fees
             return _context.MdParkingFees.FirstOrDefault(p => p.ParkFeesId == id);
         }
 
+        public List<SelectedItemFee> GetToArray()
+        {
+            return  _context.MdParkingFees.Select(p => new SelectedItemFee {  ParkFeesId = p.ParkFeesId, ParkFeesValue = p.ParkFeesValue }).ToList();
+        }
+
         public bool SaveChanges()
         {
             return (_context.SaveChanges() >= 0);
