@@ -48,6 +48,8 @@ namespace ApiParking.Data.User
             return r;
         }
 
+      
+
         public string createOtp(int userId)
         {
 
@@ -59,9 +61,7 @@ namespace ApiParking.Data.User
             _context.ParkingOtp.Add(otp);
             _context.SaveChanges();
 
-            var plain = Encoding.UTF8.GetBytes(Convert.ToString(kode));
-
-            return Convert.ToBase64String(plain);
+            return Convert.ToString(otp);
         }
     }
 }

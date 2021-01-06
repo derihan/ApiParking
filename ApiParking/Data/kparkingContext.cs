@@ -169,6 +169,10 @@ namespace ApiParking.Data
                     .HasColumnName("hist_out")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.HistoryKode)
+                    .HasColumnName("hist_kode")
+                    .HasColumnType("varchar(20)");
+
                 entity.Property(e => e.HistSts)
                     .HasColumnName("hist_sts")
                     .HasColumnType("int(2)");

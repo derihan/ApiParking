@@ -32,6 +32,10 @@ namespace ApiParking.Controllers
         private IJwtAuthenticationManager jwtAuth;
         private string message;
         private int states;
+        private int dc;
+        private string dataab;
+
+
         public UserControllers(
             IUserRepository repository, 
             ICarsRepository carrepo, 
@@ -77,12 +81,14 @@ namespace ApiParking.Controllers
 
         }
 
-       
-        //[Route("generate")]
-        //public ActionResult scanningQr()
+        //[AllowAnonymous]
+        //[HttpGet]
+        //[Route("login-guest")]
+        //public ActionResult loginGuest(MgParkHistory mgParkHistory)
         //{
-
+        //    var historykode = mgParkHistory.HistoryKode;
         //}
+
 
         [AllowAnonymous]
         [HttpPost]
@@ -91,6 +97,7 @@ namespace ApiParking.Controllers
         {
             Random rand = new Random();
             var number_p = userParking.PlateNumber;
+            Console.WriteLine(number_p);
             var password_b = userParking.UserPassword;
             var password_hash = BCrypt.Net.BCrypt.HashPassword(password_b, 12);
             var username = userParking.UserUsername;
@@ -103,51 +110,48 @@ namespace ApiParking.Controllers
                 {
                     return StatusCode(200, new { data = "Sory license number cannot be null", state = 0 });
                 }
-                var transaction = kparking.Database.BeginTransaction();
-                try
-                {
 
+             
+                        //add data user table
 
-                    //add data user table
-                    var store = new Dictionary<string, string>();
-                    store.Add("plat", number_p);
-                    store.Add("username", username);
-                    store.Add("password", password_hash);
-                    var dc = _repository.UserRegistration(store);
+                        var store = new Dictionary<string, string>();
+                        store.Add("plat", number_p);
+                        store.Add("username", username);
+                        store.Add("password", password_hash);
+                        dc = _repository.UserRegistration(store);
+                        Console.WriteLine("1");
 
-                    //insert to otp
-                    var kodeOtp = _repository.createOtp(dc);
+                        _repository.createOtp(dc);
+                        Console.WriteLine("2");
 
-                    //add data to car table
-                    var plates = new Dictionary<string, string>();
-                    plates.Add("platenum", number_p);
-                    plates.Add("userCars", Convert.ToString(dc));
-                    _carrepo.CreateCar(plates);
+                        //add data to car table
+                        var plates = new Dictionary<string, string>();
+                        plates.Add("platenum", number_p);
+                        plates.Add("userCars", Convert.ToString(dc));
+                        _carrepo.CreateCar(plates);
+                        Console.WriteLine("3");
 
-                    //update data to slot table
-                    var slots = new Dictionary<string, int>();
-                    slots.Add("slotId", comdDlot.ParSlotId);
-                    slots.Add("carUserId", dc);
-                    _slotrepo.UpdateSlot(slots);
+                        //update data to slot table
+                        var slots = new Dictionary<string, int>();
+                        slots.Add("slotId", comdDlot.ParSlotId);
+                        slots.Add("carUserId", dc);
+                        _slotrepo.UpdateSlot(slots);
+                        Console.WriteLine("4");
 
-                    //insert to table history
-                    var histo = new Dictionary<string, int>();
-                    histo.Add("historyArea", comdDlot.ParAreaId);
-                    histo.Add("park_user_id", dc);
-                    _history.CreateHistory(histo);
-                   
-                    transaction.Commit();
-                    states = 1;
+                        //insert to table history
+                        var histo = new Dictionary<string, string>();
+                        histo.Add("historyArea", Convert.ToString(comdDlot.ParAreaId));
+                        histo.Add("license", number_p);
+                        histo.Add("park_user_id",  Convert.ToString(dc));
+                        dataab = _history.CreateHistory(histo);
+                        Console.WriteLine("5");
 
-                    return StatusCode(201, new {user = username, kode = kodeOtp});
-                   
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    states = 0;
-                    message = "Save data failed, check your connection";
-                }
+                        states = 1;
+
+                        return StatusCode(201, new { kode = dataab, data = comdDlot });
+
+                  
+               
             }
             else
             {

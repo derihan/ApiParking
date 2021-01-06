@@ -16,7 +16,56 @@ namespace ApiParking.Data.Slot
 
         public MgParkingSlot checkAvailable()
         {
-            return _context.MgParkingSlot.Where(a => a.ParkSlotSts == 1 && a.ParkSlotUserId == "" ).FirstOrDefault();
+            var data = _context.MgParkingSlot.Where(a => a.ParkSlotSts == 1 && a.ParkSlotUserId == "").Join(
+                _context.MgParkingArea,
+                pslot => pslot.ParAreaId,
+                parea => parea.AreaId,
+                (pslot, parea) => new
+                {
+                    SlotId = pslot.ParSlotId,
+                    AreaId = parea.AreaId,
+                    AreaNumber = parea.AreaNumber,
+                    AreaKotId = parea.AreaKategoriId,
+                    AreafEEs = parea.AreaParkingFeesId
+                }).Join(
+                _context.MdKategoriArea,
+                areap => areap.AreaKotId,
+                katp => katp.KatiAreaId,
+                (areap, katp) => new
+                {
+                    SlotId = areap.SlotId,
+                    AreaId = areap.AreaId,
+                    AreaNumber = areap.AreaNumber,
+                    AreaKotId = areap.AreaKotId,
+                    AreaKatName = katp.KatAreaName,
+                    AreaFeesId = areap.AreafEEs
+                }).Join(
+                _context.MdParkingFees,
+                area => area.AreaFeesId,
+                feed => feed.ParkFeesId,
+                (area, feed) => new
+                {
+                    AreaNumber = area.AreaNumber,
+                    AreaKatName = area.AreaKatName,
+                    AreaFess = feed.ParkFeesValue,
+                    ParSlotId = area.SlotId,
+                    AreaId = area.AreaId
+                }).FirstOrDefault();
+            if (data == null)
+            {
+                return new MgParkingSlot();
+            }
+            else
+            {
+                return new MgParkingSlot
+                {
+                    AreaNumber = data.AreaNumber,
+                    AreaKatName = data.AreaKatName,
+                    FeesValue = data.AreaFess,
+                    ParSlotId = data.ParSlotId,
+                    ParAreaId = data.AreaId
+                };
+            }
         }
 
         public void CreateSlot(Dictionary<string, int> _data)

@@ -29,8 +29,9 @@ namespace ApiParking.Data.Area
         {
             List<MgParkingArea> genericArea = new List<MgParkingArea>();
             MgParkingArea areaObject;
+            var comparedata = DateTime.Now.ToShortDateString();
             var areadata = _context.MgParkingArea
-                    .Join(_context.MdKategoriArea,
+                    .Join(_context.MdKategoriArea,  
                         tbarea => tbarea.AreaKategoriId, 
                         tbkat => tbkat.KatiAreaId,
                         (tbarea, tbkat) => new
@@ -39,6 +40,7 @@ namespace ApiParking.Data.Area
                             AreaNumber = tbarea.AreaNumber,
                             Kategori = tbkat.KatAreaName,
                             FeesId = tbarea.AreaParkingFeesId,
+                            KategoriId = tbkat.KatiAreaId,
                             AreaCreatedAt = tbarea.AreaCreatedAt,
                         })
                     .Join(_context.MdParkingFees, 
@@ -49,17 +51,25 @@ namespace ApiParking.Data.Area
                             AreaId = a.AreaId,
                             AreaNumber = a.AreaNumber,
                             FeesValue = b.ParkFeesValue,
+                            FeesId = b.ParkFeesId,
+                            AreaKategoriId = a.KategoriId,
                             Kategori = a.Kategori,
                             AreaCreatedAt = a.AreaCreatedAt
-                        }).ToList();
+                        })
+                        .ToList();
+
+
 
             foreach (var item in areadata)
             {
+            
                 areaObject = new MgParkingArea
                 {
                     AreaId = item.AreaId,
                     AreaNumber = item.AreaNumber,
                     AreaCreatedAt = item.AreaCreatedAt,
+                    AreaKategoriId = item.AreaKategoriId,
+                    AreaParkingFeesId = item.FeesId,
                     kategori = item.Kategori,
                     FessVal = item.FeesValue
                 };
