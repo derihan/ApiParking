@@ -80,14 +80,31 @@ namespace ApiParking.Controllers
 
         }
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("login-guest")]
-        //public ActionResult loginGuest(MgParkHistory mgParkHistory)
-        //{
-        //    var historykode = mgParkHistory.HistoryKode;
-        //}
-     
+        [AllowAnonymous]
+        [HttpGet("data-user-activity/{id}")]
+        public ActionResult GetAllHistoryUser(int id)
+        {
+            var data = _repository.GetHitoryUser(id);
+            if (data != null)
+            {
+                return StatusCode(200, new { data });
+            }
+            return NotFound();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("data-user-activity")]
+        public ActionResult getUserACtivity(int id)
+        {
+            var data = _repository.GetUserActivity();
+            if (data != null)
+            {
+                return StatusCode(200, new { data });
+            }
+            return NotFound();
+        }
+
+      
 
         [AllowAnonymous]
         [HttpPost]

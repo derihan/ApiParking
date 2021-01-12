@@ -52,7 +52,7 @@ namespace ApiParking.Data.History
         {
             Object data = new { };
 
-            data = _hostcontext.History.FromSqlRaw("SELECT h.hist_kode,h.hist_sts,h.hist_created_atd, h.hist_area_id, h.hist_in, h.hist_out, ha.area_number, " +
+            data = _hostcontext.History.FromSqlRaw("SELECT ds.user_id,h.hist_kode,h.hist_sts,h.hist_created_atd, h.hist_area_id, h.hist_in, h.hist_out, ha.area_number, " +
                "ak.kat_area_name, ds.user_fullname, ds.user_username,h.hist_id from mg_park_history h JOIN mg_parking_area ha on ha.area_id = h.hist_area_id " +
                "JOIN md_kategori_area ak ON ak.kati_area_id = ha.area_kategori_id JOIN mg_user_parking ds ON ds.user_id = h.park_user_id")
                 .Where(xc => Convert.ToString(xc.area_number) == filter || xc.kat_area_name.Contains(filter) || xc.hist_kode.Contains(filter) ).ToList();
@@ -65,7 +65,7 @@ namespace ApiParking.Data.History
         {
             Object data = new { };
 
-            data = _hostcontext.History.FromSqlRaw("SELECT h.hist_kode,h.hist_sts,h.hist_created_atd, h.hist_area_id, h.hist_in, h.hist_out, ha.area_number, " +
+            data = _hostcontext.History.FromSqlRaw("SELECT ds.user_id,h.hist_kode,h.hist_sts,h.hist_created_atd, h.hist_area_id, h.hist_in, h.hist_out, ha.area_number, " +
                 "ak.kat_area_name, ds.user_fullname, ds.user_username,h.hist_id from mg_park_history h JOIN mg_parking_area ha on ha.area_id = h.hist_area_id " +
                 "JOIN md_kategori_area ak ON ak.kati_area_id = ha.area_kategori_id JOIN mg_user_parking ds ON ds.user_id = h.park_user_id").ToList();
 
@@ -76,6 +76,19 @@ namespace ApiParking.Data.History
         public bool SaveChanges()
         {
             return (_context.SaveChanges() >= 0);
+        }
+
+        public object GetHitoryUser(int id)
+        {
+            Object data = new { };
+
+            data = _hostcontext.History.FromSqlRaw("SELECT ds.user_id,h.hist_kode,h.hist_sts,h.hist_created_atd, h.hist_area_id, h.hist_in, h.hist_out, ha.area_number, " +
+               "ak.kat_area_name, ds.user_fullname, ds.user_username,h.hist_id from mg_park_history h JOIN mg_parking_area ha on ha.area_id = h.hist_area_id " +
+               "JOIN md_kategori_area ak ON ak.kati_area_id = ha.area_kategori_id JOIN mg_user_parking ds ON ds.user_id = h.park_user_id")
+                .Where(xc => xc.user_id == id ).ToList();
+
+            return data;
+
         }
     }
 }

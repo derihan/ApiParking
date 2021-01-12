@@ -20,6 +20,8 @@ namespace ApiParking.Data.History
 
         public string user_fullname { get; set; }
 
+        public int user_id { get; set; }
+
         public string user_username { get; set; }
 
         public int hist_sts { get; set; }

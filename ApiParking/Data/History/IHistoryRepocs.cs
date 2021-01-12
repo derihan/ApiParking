@@ -12,5 +12,7 @@ namespace ApiParking.Data.History
         bool SaveChanges();
         Object GetAllArea();
         Object GetFilter(string data);
+
+        Object GetHitoryUser(int id);
     }
 }

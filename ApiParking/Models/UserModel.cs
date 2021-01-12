@@ -12,7 +12,8 @@ namespace ApiParking.Models
         [Key]
         public int user_id { get; set; }
         public string user_username { get; set; }
-        public string user_password { get; set; }
+        public string user_fullname { get; set; }
+      
 
         public string user_role { get; set; }
 

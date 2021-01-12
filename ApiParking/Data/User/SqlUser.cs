@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ApiParking.Data.History;
 using ApiParking.Models;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiParking.Data.User
 {
     public class SqlUser : IUserRepository
     {
         private kparkingContext _context;
+        private IHistoryRepocs _HistoryRepocs;
+        private UserContext userContext;
       
-        public SqlUser(kparkingContext context)
+        public SqlUser(kparkingContext context, IHistoryRepocs historyRepocs, UserContext xuser)
         {
+            userContext = xuser;
+            _HistoryRepocs = historyRepocs;
             _context = context;
         }
 
@@ -64,9 +69,16 @@ namespace ApiParking.Data.User
             return Convert.ToString(otp);
         }
 
-        public IEnumerable<MgUserParking> GetAllSlot()
+        public object GetHitoryUser(int id)
         {
-            throw new NotImplementedException();
+            var data = _HistoryRepocs.GetHitoryUser(id);
+            return data;
+        }
+
+        public object GetUserActivity()
+        {
+            return userContext.User.FromSqlRaw("SELECT ds.user_id,ds.user_username,ds.user_fullname" +
+                ",ds.user_craeted_at,ds.users_sts,ds.user_role FROM mg_user_parking AS ds where ds.user_role=2").ToList();
         }
     }
 }

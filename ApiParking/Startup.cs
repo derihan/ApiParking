@@ -44,6 +44,7 @@ namespace ApiParking
             //DB Context 
             services.AddDbContext<kparkingContext>(opt => opt.UseMySql(Configuration.GetConnectionString("ConnectionCommand")));
             services.AddDbContext<HistoryContext>(opt => opt.UseMySql(Configuration.GetConnectionString("ConnectionCommand")));
+            services.AddDbContext<UserContext>(opt => opt.UseMySql(Configuration.GetConnectionString("ConnectionCommand")));
 
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

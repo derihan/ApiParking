@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiParking.Data.History;
 using ApiParking.Models;
 
 namespace ApiParking.Data.User
@@ -13,7 +14,9 @@ namespace ApiParking.Data.User
 
         string createOtp(int userId);
 
-        IEnumerable<MgUserParking> GetAllSlot();
+        object GetHitoryUser(int id);
+
+        object GetUserActivity();
 
         MgUserParking adminLogin(string username, string password);
     }
