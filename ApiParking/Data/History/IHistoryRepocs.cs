@@ -9,8 +9,8 @@ namespace ApiParking.Data.History
     public interface IHistoryRepocs
     {
         string CreateHistory(Dictionary<string, string> data);
-
         bool SaveChanges();
-       
+        Object GetAllArea();
+        Object GetFilter(string data);
     }
 }

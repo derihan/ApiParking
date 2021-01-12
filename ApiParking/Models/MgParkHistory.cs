@@ -9,7 +9,6 @@ namespace ApiParking.Models
         [Key]
         public int HistId { get; set; }
         public string HistAreaId { get; set; }
-
         public string HistoryKode { get; set; }
 
         [Timestamp]

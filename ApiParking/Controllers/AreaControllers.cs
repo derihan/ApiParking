@@ -62,7 +62,6 @@ namespace ApiParking.Controllers
         }
 
         [HttpPost]
-
         public ActionResult CreateArea(MgParkingArea mgParkingArea)
         {
             

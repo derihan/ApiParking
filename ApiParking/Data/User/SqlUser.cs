@@ -63,5 +63,10 @@ namespace ApiParking.Data.User
 
             return Convert.ToString(otp);
         }
+
+        public IEnumerable<MgUserParking> GetAllSlot()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

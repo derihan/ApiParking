@@ -32,9 +32,8 @@ namespace ApiParking.Models
         [NotMapped]
         public int FessVal { get; set; }
 
-        internal object Join(DbSet<MdKategoriArea> mdKategoriArea, Func<object, object> p1, Func<MdKategoriArea, int> p2, Func<object, object, object> p3)
-        {
-            throw new NotImplementedException();
-        }
+    
+
+        
     }
 }

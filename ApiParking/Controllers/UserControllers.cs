@@ -35,7 +35,6 @@ namespace ApiParking.Controllers
         private int dc;
         private string dataab;
 
-
         public UserControllers(
             IUserRepository repository, 
             ICarsRepository carrepo, 
@@ -88,7 +87,7 @@ namespace ApiParking.Controllers
         //{
         //    var historykode = mgParkHistory.HistoryKode;
         //}
-
+     
 
         [AllowAnonymous]
         [HttpPost]

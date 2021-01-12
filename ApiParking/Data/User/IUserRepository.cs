@@ -13,6 +13,8 @@ namespace ApiParking.Data.User
 
         string createOtp(int userId);
 
+        IEnumerable<MgUserParking> GetAllSlot();
+
         MgUserParking adminLogin(string username, string password);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ApiParking.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,10 +11,13 @@ namespace ApiParking.Data.History
     public class SqlHistory : IHistoryRepocs
     {
         private kparkingContext _context;
+        private HistoryContext _hostcontext;
 
-        public SqlHistory(kparkingContext context)
+        public SqlHistory(kparkingContext context,HistoryContext historyContext)
         {
             _context = context;
+            _hostcontext = historyContext;
+
         }
 
 
@@ -42,6 +46,31 @@ namespace ApiParking.Data.History
             _context.MgParkHistory.Add(pslot);
             _context.SaveChanges();
             return dataFormating;
+        }
+
+        public object GetFilter(string filter)
+        {
+            Object data = new { };
+
+            data = _hostcontext.History.FromSqlRaw("SELECT h.hist_kode,h.hist_sts,h.hist_created_atd, h.hist_area_id, h.hist_in, h.hist_out, ha.area_number, " +
+               "ak.kat_area_name, ds.user_fullname, ds.user_username,h.hist_id from mg_park_history h JOIN mg_parking_area ha on ha.area_id = h.hist_area_id " +
+               "JOIN md_kategori_area ak ON ak.kati_area_id = ha.area_kategori_id JOIN mg_user_parking ds ON ds.user_id = h.park_user_id")
+                .Where(xc => Convert.ToString(xc.area_number) == filter || xc.kat_area_name.Contains(filter) || xc.hist_kode.Contains(filter) ).ToList();
+
+            return data;
+
+        }
+
+        public Object GetAllArea()
+        {
+            Object data = new { };
+
+            data = _hostcontext.History.FromSqlRaw("SELECT h.hist_kode,h.hist_sts,h.hist_created_atd, h.hist_area_id, h.hist_in, h.hist_out, ha.area_number, " +
+                "ak.kat_area_name, ds.user_fullname, ds.user_username,h.hist_id from mg_park_history h JOIN mg_parking_area ha on ha.area_id = h.hist_area_id " +
+                "JOIN md_kategori_area ak ON ak.kati_area_id = ha.area_kategori_id JOIN mg_user_parking ds ON ds.user_id = h.park_user_id").ToList();
+
+
+            return data;
         }
 
         public bool SaveChanges()
