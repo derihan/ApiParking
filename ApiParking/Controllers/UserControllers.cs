@@ -118,12 +118,12 @@ namespace ApiParking.Controllers
         public ActionResult MobileGetData()
         {
             int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            Console.WriteLine(id);
+           
 
             if (!String.IsNullOrEmpty(id.ToString()))
             {
                 var datacm = _repository.MobileUserApi(id);
-                return Ok(new { data = datacm });
+                return Ok(new {datacm });
             }
             return NotFound();
         }
@@ -154,6 +154,49 @@ namespace ApiParking.Controllers
             return NotFound();
         }
 
+        [Authorize]
+        [HttpPut("update-profil/{id}")]
+        public ActionResult UpdateProfil(MgUserParking userParking)
+        {
+            var username = userParking.UserUsername;
+            var userfullname = userParking.UserFullname;
+
+            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
+            if (!String.IsNullOrEmpty(id.ToString()))
+            {
+
+                var dts = kparking.MgUserParking.Where(cv => cv.UserUsername == username).Count();
+
+                if(dts < 1)
+                {
+                    var store = new Dictionary<String, string>();
+
+                    store.Add("user_username", username);
+                    store.Add("user_fullname", userfullname);
+                    store.Add("id", id.ToString());
+
+                    _repository.updateProfil(store, id);
+                    var mock = _repository.SaveChanges();
+
+                    if (mock)
+                    {
+                        message = "update succesfull";
+                        states = 200;
+                    }
+                    else
+                    {
+                        message = "failed to update";
+                        states = 404;
+                    }
+
+                    return Ok(new { msg = message, sts = states });
+                }
+                return Ok(new { msg = "Username sudah digunakan" } );
+            }
+
+            return NotFound();
+        }
 
         [AllowAnonymous]
         [HttpPost]
@@ -173,10 +216,9 @@ namespace ApiParking.Controllers
                 {
                     return StatusCode(200, new { data = "Sory license number cannot be null", state = 0 });
                 }
-
+                        
              
                         //add data user table
-
                         var store = new Dictionary<string, string>();
                         store.Add("plat", number_p);
                         store.Add("username", username);

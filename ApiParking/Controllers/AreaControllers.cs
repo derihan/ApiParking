@@ -128,7 +128,6 @@ namespace ApiParking.Controllers
                         _repository.UpdateArea(store);
                         var mock = _repository.SaveChanges();
                       
-
                         if (mock)
                         {
                             message = "update succesfull";

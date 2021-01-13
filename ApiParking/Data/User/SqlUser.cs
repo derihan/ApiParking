@@ -78,7 +78,7 @@ namespace ApiParking.Data.User
 
         public object GetUserActivity()
         {
-            return userContext.User.FromSqlRaw("SELECT ds.user_id,ds.user_username,ds.user_fullname" +
+            return userContext.User.FromSqlRaw("SELECT ds.user_password,ds.user_id,ds.user_username,ds.user_fullname" +
                 ",ds.user_craeted_at,ds.users_sts,ds.user_role FROM mg_user_parking AS ds where ds.user_role=2").ToList();
         }
 
@@ -132,6 +132,14 @@ namespace ApiParking.Data.User
             }
             conn.Close();
             return slm;
+        }
+
+        public void updateProfil(Dictionary<string, string> data, int id)
+        {
+            var store = _context.MgUserParking.Where(s => s.UserId == id).First();
+            store.UserUsername = data["user_username"];
+            store.UserFullname = data["user_fullname"];
+          
         }
     }
 }

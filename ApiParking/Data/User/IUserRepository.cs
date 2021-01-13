@@ -16,6 +16,8 @@ namespace ApiParking.Data.User
 
         string createOtp(int userId);
 
+        void updateProfil(Dictionary<String, String> stored, int id);
+
         object GetHitoryUser(int id);
 
         object GetUserActivity();

@@ -14,7 +14,7 @@ namespace ApiParking.Models
         public string UserUsername { get; set; }
         public string UserRole { get; set; } = "2";
         public string UserFullname { get; set; } = "Customers";
-        [Required]
+       
         public string UserPassword { get; set; }
         
         [Timestamp]
