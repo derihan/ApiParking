@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace ApiParking.Data.Slot
     {
         private kparkingContext _context;
         private SlotContext Slotsc;
-        public SqlSlots(kparkingContext context,SlotContext slotContext)
+        public SqlSlots(kparkingContext context, SlotContext slotContext)
         {
             Slotsc = slotContext;
             _context = context;
@@ -77,13 +78,22 @@ namespace ApiParking.Data.Slot
 
         public void CreateSlot(Dictionary<string, int> _data)
         {
-            var pslot = new MgParkingSlot 
+            var pslot = new MgParkingSlot
             {
                 ParAreaId = _data["ParAreaId"]
             };
 
             _context.MgParkingSlot.Add(pslot);
             SaveChanges();
+        }
+
+
+        private ObservableCollection<SlotModels> myVar;
+
+        public ObservableCollection<SlotModels> Slotfilter
+        {
+            get { return myVar; }
+            set { myVar = value; }
         }
 
 
@@ -120,7 +130,7 @@ namespace ApiParking.Data.Slot
                     dso.area_number = (int)(rdr.GetInt32("area_number"));
                     dso.kat_area_name = rdr.GetString("kat_area_name").ToString();
                     dso.kat_number = (int)(rdr.GetInt32("kat_number"));
-                    dso.park_car_license = (rdr["park_car_license"] == DBNull.Value ) ? String.Empty : rdr.GetString("park_car_license").ToString();
+                    dso.park_car_license = (rdr["park_car_license"] == DBNull.Value) ? String.Empty : rdr.GetString("park_car_license").ToString();
                     dso.park_slot_status = rdr.GetString("park_slot_status").ToString();
                     dso.park_slot_sts = (int)rdr.GetInt32("park_slot_sts");
                     dso.park_slot_user_id = (rdr["park_slot_user_id"] == DBNull.Value) ? String.Empty : rdr.GetString("park_slot_user_id").ToString();
@@ -128,20 +138,31 @@ namespace ApiParking.Data.Slot
                     dso.user_username = (rdr["user_username"] == DBNull.Value) ? String.Empty : rdr.GetString("user_username").ToString();
 
                     slm.Add(dso);
-                   
+
                 }
-                Console.WriteLine(slm);
+
                 return slm;
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return new List<SlotModels>();
+
             }
             conn.Close();
 
-          
+            return new List<SlotModels>();
+        }
+
+        public IEnumerable<SlotModels> GetFilter(string filter)
+        {
+
+
+            ObservableCollection<SlotModels> sda = new ObservableCollection<SlotModels>(GetAllSlot());
+            Slotfilter = sda;
+
+            return Slotfilter.Where(cx => Convert.ToString(cx.kat_area_name).Contains(filter) || cx.area_number.ToString().Contains(filter) || cx.user_username.Contains(filter) );
+
         }
 
         public bool SaveChanges()

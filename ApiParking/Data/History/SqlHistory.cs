@@ -13,7 +13,7 @@ namespace ApiParking.Data.History
         private kparkingContext _context;
         private HistoryContext _hostcontext;
 
-        public SqlHistory(kparkingContext context,HistoryContext historyContext)
+        public SqlHistory(kparkingContext context, HistoryContext historyContext)
         {
             _context = context;
             _hostcontext = historyContext;
@@ -33,13 +33,13 @@ namespace ApiParking.Data.History
 
             foreach (var item in datahist)
             {
-                if (item.HistCreatedAtd.ToShortDateString() == comparedate )
+                if (item.HistCreatedAtd.ToShortDateString() == comparedate)
                 {
                     counter += 1;
                 }
             }
 
-            var dataFormating = String.Format("000{0}{1}", DateTime.Now.ToString("ddMMyyyy"), (counter + 1) );
+            var dataFormating = String.Format("000{0}{1}", DateTime.Now.ToString("ddMMyyyy"), (counter + 1));
             pslot.HistAreaId = Convert.ToString(data["historyArea"]);
             pslot.ParkUserId = Convert.ToString(data["park_user_id"]);
             pslot.HistoryKode = dataFormating;
@@ -55,7 +55,7 @@ namespace ApiParking.Data.History
             data = _hostcontext.History.FromSqlRaw("SELECT ds.user_id,h.hist_kode,h.hist_sts,h.hist_created_atd, h.hist_area_id, h.hist_in, h.hist_out, ha.area_number, " +
                "ak.kat_area_name, ds.user_fullname, ds.user_username,h.hist_id from mg_park_history h JOIN mg_parking_area ha on ha.area_id = h.hist_area_id " +
                "JOIN md_kategori_area ak ON ak.kati_area_id = ha.area_kategori_id JOIN mg_user_parking ds ON ds.user_id = h.park_user_id")
-                .Where(xc => Convert.ToString(xc.area_number) == filter || xc.kat_area_name.Contains(filter) || xc.hist_kode.Contains(filter) ).ToList();
+                .Where(xc => Convert.ToString(xc.area_number) == filter || xc.kat_area_name.Contains(filter) || xc.hist_kode.Contains(filter) || xc.user_username.Contains(filter) ).ToList();
 
             return data;
 

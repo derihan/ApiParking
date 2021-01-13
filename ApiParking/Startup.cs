@@ -90,7 +90,8 @@ namespace ApiParking
             services.AddScoped<ICarsRepository, SqlCars>();
             services.AddScoped<IHistoryRepocs, SqlHistory>();
 
-            services.AddSwaggerGen(c => {
+            services.AddSwaggerGen(c =>
+            {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
         }
@@ -111,13 +112,18 @@ namespace ApiParking
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.RoutePrefix = string.Empty;
+                c.RoutePrefix = String.Empty;
             });
 
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<ServerHub>("/signal");
+                endpoints.MapControllers();
+            });
 
         }
     }

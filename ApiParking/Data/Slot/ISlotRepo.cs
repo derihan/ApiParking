@@ -16,8 +16,6 @@ namespace ApiParking.Data.Slot
         void CreateSlot(Dictionary<string, int> data);
 
         void UpdateSlot(Dictionary<string, int> data);
-
-
-
+        IEnumerable<SlotModels> GetFilter(string filter);
     }
 }

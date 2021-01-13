@@ -32,8 +32,8 @@ namespace ApiParking.Controllers
         [HttpGet("{filter}", Name = "GetFiltered")]
         public ActionResult<Object> GetFiltered(string filter)
         {
-            var fiktesan = Regex.Replace(filter, "[^A-Za-z0-9 ]", "");
-            var data = _repository.GetFilter(filter);
+            var fiktesan = Regex.Replace(filter, "[^A-Za-z0-9_.]", " ");
+            var data = _repository.GetFilter(fiktesan);
             if (data != null)
             {
                 return StatusCode(200, new { data });
