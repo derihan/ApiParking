@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using ApiParking.Handler;
 using Microsoft.AspNetCore.Authorization;
 using BCrypt.Net;
+using System.Text.RegularExpressions;
 
 namespace ApiParking.Controllers
 {
@@ -104,7 +105,33 @@ namespace ApiParking.Controllers
             return NotFound();
         }
 
-      
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("guest-login")]
+        public ActionResult GuestLoginByKode(ScabbModel scabb)
+        {
+          
+            var histokode =  Regex.Replace(scabb.history_kode, "[^A-Za-z0-9]", " ");
+            var datacm = _repository.getScanndata(histokode);
+
+            if (datacm != null)
+            {
+
+                List<UserModel> smk =new List<UserModel>((IEnumerable<UserModel>)datacm);
+               
+                    var token = jwtAuth.Authenticate(smk[0].user_username, smk[0].user_password);
+                    if (token == null)
+                    {
+                        return Unauthorized();
+                    }
+                    return Ok(token);
+              
+               
+            }
+
+            return NotFound();
+        }
+
 
         [AllowAnonymous]
         [HttpPost]
@@ -113,11 +140,9 @@ namespace ApiParking.Controllers
         {
             Random rand = new Random();
             var number_p = userParking.PlateNumber;
-            Console.WriteLine(number_p);
             var password_b = userParking.UserPassword;
             var password_hash = BCrypt.Net.BCrypt.HashPassword(password_b, 12);
             var username = userParking.UserUsername;
-
             var comdDlot = _slotrepo.checkAvailable();
 
             if ( comdDlot != null)

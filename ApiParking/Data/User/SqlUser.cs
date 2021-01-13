@@ -80,5 +80,13 @@ namespace ApiParking.Data.User
             return userContext.User.FromSqlRaw("SELECT ds.user_id,ds.user_username,ds.user_fullname" +
                 ",ds.user_craeted_at,ds.users_sts,ds.user_role FROM mg_user_parking AS ds where ds.user_role=2").ToList();
         }
+
+        public object getScanndata(string histo)
+        {
+            var comd = userContext.User.FromSqlRaw("SELECT ds.user_password,ds.user_id,ds.user_username,ds.user_fullname" +
+                ",ds.user_craeted_at,ds.users_sts,ds.user_role FROM mg_user_parking AS ds JOIN mg_park_history sh ON sh.park_user_id=ds.user_id where ds.user_role=2 and sh.hist_kode={0}",histo).ToList();
+           
+            return comd;
+        }
     }
 }

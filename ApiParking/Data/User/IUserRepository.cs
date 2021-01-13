@@ -12,6 +12,8 @@ namespace ApiParking.Data.User
         bool SaveChanges();
         int UserRegistration(Dictionary<string, string> data);
 
+        object getScanndata(string histo);
+
         string createOtp(int userId);
 
         object GetHitoryUser(int id);
