@@ -39,25 +39,35 @@ namespace ApiParking.Data.KArea
             return (_context.SaveChanges() >= 0);
         }
 
-        public MdKategoriArea CheckData(string Kategori)
+        public MdKategoriArea CheckData(MdKategoriArea md)
         {
-            return _context.MdKategoriArea.FirstOrDefault(p => p.KatAreaName == Kategori);
+            return _context.MdKategoriArea.FirstOrDefault(p => p.KatAreaName == md.KatAreaName && p.KatNumber == md.KatNumber );
         }
 
         public void UpdateKArea(Dictionary<String, string> data)
         {
             var store = _context.MdKategoriArea.Where(s => s.KatiAreaId == Convert.ToInt16(data["id"])).First();
             store.KatAreaName = data["name_kategori"];
+            store.KatNumber = Convert.ToInt32(data["kat_number"]);
             store.KatiAreaId = Convert.ToInt16(data["id"]);
         }
 
-        public void DeleteKArea(MdKategoriArea mdKategori)
+        public bool DeleteKArea(MdKategoriArea mdKategori)
         {
-            if (mdKategori == null)
+
+            var exis = _context.MgParkingArea.Where(cv => cv.AreaKategoriId == mdKategori.KatiAreaId).Count();
+
+            if(exis > 0)
             {
-                throw new ArgumentNullException(nameof(mdKategori));
+                return false;
             }
-            _context.MdKategoriArea.Remove(mdKategori);
+            else
+            {
+                _context.MdKategoriArea.Remove(mdKategori);
+                return true;
+            }
+
+           
         }
 
     }

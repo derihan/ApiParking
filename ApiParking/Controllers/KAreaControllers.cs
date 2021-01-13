@@ -19,6 +19,7 @@ namespace ApiParking.Controllers
         private readonly IKAreaRepo _repository;
         private string message;
         private int states;
+        private int state;
 
         public KAreaControllers(IKAreaRepo repository)
         {
@@ -55,14 +56,14 @@ namespace ApiParking.Controllers
         {
             if (ModelState.IsValid)
             {
-                var mark = _repository.CheckData(mdKategoriArea.KatAreaName);
+                var mark = _repository.CheckData(mdKategoriArea);
 
                 if (mark == null)
                 {
                     _repository.CreateKArea(mdKategoriArea);
                     _repository.SaveChanges();
 
-                    return CreatedAtAction(nameof(GetKAreaById), new { Id = mdKategoriArea.KatiAreaId }, mdKategoriArea);
+                    return StatusCode(200, new { alert = "Simpan data sukses" });
                 }
                 else
                 {
@@ -85,12 +86,13 @@ namespace ApiParking.Controllers
                 }
                 else
                 {
-                    var cmdex = _repository.CheckData(_data.KatAreaName);
+                    var cmdex = _repository.CheckData(mdKategori);
                     if (cmdex == null)
                     {
                         var store = new Dictionary<String, string>();
 
                         store.Add("name_kategori", _data.KatAreaName);
+                        store.Add("kat_number", _data.KatNumber.ToString());
                         store.Add("id", Convert.ToString(id));
 
                         _repository.UpdateKArea(store);
@@ -101,16 +103,18 @@ namespace ApiParking.Controllers
                         {
                             message = "update succesfull";
                             states = 200;
+                            state = 1;
                         }
                         else
                         {
                             message = "failed to update";
-                            states = 404;
+                            states = 200;
+                            state = 0;
                         }
 
-                        return StatusCode(states, new { alert = message });
+                        return StatusCode(states, new { alert = message,state = state });
                     }
-                    return StatusCode(200, new { alert = "Data exist" });
+                    return StatusCode(200, new { alert = "Data exist" , state = 2});
                 }
             }
             return NotFound();
@@ -126,20 +130,33 @@ namespace ApiParking.Controllers
             }
             else
             {
-                _repository.DeleteKArea(commandItems);
-                var mpck = _repository.SaveChanges();
+                var data =  _repository.DeleteKArea(commandItems);
 
-                if (mpck)
+                if (data)
                 {
-                    message = "delete data succesfull";
-                    states = 200;
+                    var mpck = _repository.SaveChanges();
+
+                    if (mpck)
+                    {
+                        message = "delete data succesfull";
+                        states = 200;
+                        state = 1;
+                    }
+                    else
+                    {
+                        message = "delete data failed";
+                        states = 404;
+                        state = 0;
+                    }
                 }
                 else
                 {
-                    message = "delete data failed";
-                    states = 404;
+                    message = "restricted data, used by another table ";
+                    states = 200;
+                    state = 0;
                 }
-                return StatusCode(states, new { alert = message });
+
+                return StatusCode(states, new { alert = message, state = state });
             }
 
         }

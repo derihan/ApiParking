@@ -12,9 +12,9 @@ namespace ApiParking.Data.KArea
         IEnumerable<MdKategoriArea> GetAllKArea();
         MdKategoriArea GetKAreaById(int id);
         void CreateKArea(MdKategoriArea Areas_kategori);
-        MdKategoriArea CheckData(string kategori);
+        MdKategoriArea CheckData(MdKategoriArea md);
         void UpdateKArea(Dictionary<String, string> data );
-        void DeleteKArea(MdKategoriArea mdKategori);
+        bool DeleteKArea(MdKategoriArea mdKategori);
 
     }
 }
