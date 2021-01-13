@@ -54,7 +54,7 @@ namespace ApiParking.Controllers
             jwtAuth = jwtauth;
         }
 
-        //[HttpPost]
+        [HttpPost]
         [AllowAnonymous]
         [Route("login")]
         public ActionResult login(MgUserParking user)

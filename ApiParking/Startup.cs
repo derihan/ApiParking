@@ -26,6 +26,7 @@ using ApiParking.Handler;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 namespace ApiParking
 {
@@ -45,6 +46,7 @@ namespace ApiParking
             services.AddDbContext<kparkingContext>(opt => opt.UseMySql(Configuration.GetConnectionString("ConnectionCommand")));
             services.AddDbContext<HistoryContext>(opt => opt.UseMySql(Configuration.GetConnectionString("ConnectionCommand")));
             services.AddDbContext<UserContext>(opt => opt.UseMySql(Configuration.GetConnectionString("ConnectionCommand")));
+            services.AddDbContext<SlotContext>(opt => opt.UseMySql(Configuration.GetConnectionString("ConnectionCommand")));
 
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -76,7 +78,8 @@ namespace ApiParking
                 };
 
             });
-           
+
+            
 
             //Service context
             services.AddScoped<IKAreaRepo, SqlKArea>();
@@ -86,26 +89,36 @@ namespace ApiParking
             services.AddScoped<IUserRepository, SqlUser>();
             services.AddScoped<ICarsRepository, SqlCars>();
             services.AddScoped<IHistoryRepocs, SqlHistory>();
+
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSwagger(c =>
+            {
+                c.SerializeAsV2 = true;
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHub<ServerHub>("/signal");
-                endpoints.MapControllers();
-            });
         }
     }
 }

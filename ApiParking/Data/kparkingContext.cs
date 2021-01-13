@@ -22,6 +22,7 @@ namespace ApiParking.Data
         public virtual DbSet<MgParkingUserCar> MgParkingUserCar { get; set; }
         public virtual DbSet<MgUserParking> MgUserParking { get; set; }
         public virtual DbSet<ParkingOtp> ParkingOtp { get; set; }
+    
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,6 +50,13 @@ namespace ApiParking.Data
                     .HasColumnType("varchar(30)")
                     .HasCharSet("latin1")
                     .HasCollation("latin1_swedish_ci");
+
+                entity.Property(e => e.KatNumber)
+                  .IsRequired()
+                  .HasColumnName("kat_number")
+                  .HasColumnType("int(5)")
+                  .HasCharSet("latin1")
+                  .HasCollation("latin1_swedish_ci");
 
                 entity.Property(e => e.KatAreaSts)
                     .HasColumnName("kat_area_sts")

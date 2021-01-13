@@ -12,6 +12,9 @@ namespace ApiParking.Models
         [Required]
         public string KatAreaName { get; set; }
 
+        [Required]
+        public int KatNumber { get; set; }
+
         [Timestamp]
         public DateTime CreatedAt { get; set; }
        

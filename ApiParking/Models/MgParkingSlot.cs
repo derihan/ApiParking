@@ -24,5 +24,7 @@ namespace ApiParking.Models
         public string AreaKatName { get; set; }
         [NotMapped]
         public int FeesValue { get; set; }
+        [NotMapped]
+        public int KatNumber { get; set; }
     }
 }

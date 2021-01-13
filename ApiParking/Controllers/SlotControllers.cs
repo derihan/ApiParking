@@ -23,13 +23,14 @@ namespace ApiParking.Controllers
             _repository = slotRepo;
         }
 
+        [AllowAnonymous]
         [HttpGet]
-        public ActionResult<IEnumerable<MgParkingSlot>> GetAllArea()
+        public ActionResult<IEnumerable<SlotModels>> GetAllArea()
         {
             var commandItems = _repository.GetAllSlot();
             if (commandItems != null)
             {
-                return Ok(commandItems);
+                return Ok( new { data = commandItems });
             }
             return NotFound();
         }

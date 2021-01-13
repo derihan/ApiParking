@@ -9,12 +9,15 @@ namespace ApiParking.Data.Slot
     public interface ISlotRepo
     {
         bool SaveChanges();
-        IEnumerable<MgParkingSlot> GetAllSlot();
+        IEnumerable<SlotModels> GetAllSlot();
 
         //IEnumerable<MgParkingSlot> checkAvailable();
         MgParkingSlot checkAvailable();
         void CreateSlot(Dictionary<string, int> data);
 
         void UpdateSlot(Dictionary<string, int> data);
+
+
+
     }
 }
