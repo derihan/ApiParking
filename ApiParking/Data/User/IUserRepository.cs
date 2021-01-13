@@ -20,6 +20,8 @@ namespace ApiParking.Data.User
 
         object GetUserActivity();
 
+        Dictionary<String, String> MobileUserApi(int ids);
+
         MgUserParking adminLogin(string username, string password);
     }
 }

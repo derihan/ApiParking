@@ -86,7 +86,6 @@ namespace ApiParking.Data.History
                "ak.kat_area_name, ds.user_fullname, ds.user_username,h.hist_id from mg_park_history h JOIN mg_parking_area ha on ha.area_id = h.hist_area_id " +
                "JOIN md_kategori_area ak ON ak.kati_area_id = ha.area_kategori_id JOIN mg_user_parking ds ON ds.user_id = h.park_user_id")
                 .Where(xc => xc.user_id == id ).ToList();
-
             return data;
 
         }

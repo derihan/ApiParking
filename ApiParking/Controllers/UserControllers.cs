@@ -15,6 +15,7 @@ using ApiParking.Handler;
 using Microsoft.AspNetCore.Authorization;
 using BCrypt.Net;
 using System.Text.RegularExpressions;
+using System.Security.Claims;
 
 namespace ApiParking.Controllers
 {
@@ -31,6 +32,7 @@ namespace ApiParking.Controllers
         private readonly IHistoryRepocs _history;
         private readonly kparkingContext kparking;
         private IJwtAuthenticationManager jwtAuth;
+     
         private string message;
         private int states;
         private int dc;
@@ -44,6 +46,7 @@ namespace ApiParking.Controllers
             IConfiguration config,
             IHistoryRepocs history,
             IJwtAuthenticationManager jwtauth
+            
             )
         {
             _repository = repository;
@@ -53,6 +56,7 @@ namespace ApiParking.Controllers
             _history = history;
             _config = config;
             jwtAuth = jwtauth;
+           
         }
 
         [HttpPost]
@@ -65,7 +69,10 @@ namespace ApiParking.Controllers
                 var data = _repository.adminLogin(user.UserUsername, user.UserPassword);
                 if (data != null)
                 {
-                    var token = jwtAuth.Authenticate(data.UserUsername, data.UserPassword);
+
+                   
+
+                    var token = jwtAuth.Authenticate(data.UserUsername, data.UserPassword, data.UserId);
                     if (token == null)
                     {
                         return Unauthorized();
@@ -105,6 +112,22 @@ namespace ApiParking.Controllers
             return NotFound();
         }
 
+        [Authorize]
+        [HttpGet]
+        [Route("mobile-guest-data")]
+        public ActionResult MobileGetData()
+        {
+            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            Console.WriteLine(id);
+
+            if (!String.IsNullOrEmpty(id.ToString()))
+            {
+                var datacm = _repository.MobileUserApi(id);
+                return Ok(new { data = datacm });
+            }
+            return NotFound();
+        }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("guest-login")]
@@ -117,15 +140,14 @@ namespace ApiParking.Controllers
             if (datacm != null)
             {
 
-                List<UserModel> smk =new List<UserModel>((IEnumerable<UserModel>)datacm);
+                    List<UserModel> smk =new List<UserModel>((IEnumerable<UserModel>)datacm);
                
-                    var token = jwtAuth.Authenticate(smk[0].user_username, smk[0].user_password);
+                    var token = jwtAuth.Authenticate(smk[0].user_username, smk[0].user_password, smk[0].user_id);
                     if (token == null)
                     {
                         return Unauthorized();
                     }
                     return Ok(token);
-              
                
             }
 
