@@ -21,10 +21,13 @@ namespace ApiParking.Models
         [Required]
         public int AreaParkingFeesId { get; set; }
 
-        [Timestamp]
-        public DateTime AreaCreatedAt { get; set; }
+        public DateTime AreaCreatedAt { get; set; } = DateTime.Now;
 
         public int AreaSts { get; set; } = 1;
+
+
+        [NotMapped]
+        public int katNumber { get; set; }
 
         [NotMapped]
         public string kategori { get; set; }

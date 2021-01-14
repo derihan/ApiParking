@@ -36,7 +36,7 @@ namespace ApiParking.Controllers
             }
             else
             {
-                return StatusCode(200, new { alert = "Nodata present", data = new { } });
+                return NotFound();
             }
         }
 

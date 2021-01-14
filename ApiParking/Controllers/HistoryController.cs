@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace ApiParking.Controllers
 {
-    
+    [Authorize]
     [Route("api/data-history")]
     [ApiController]
     public class HistoryController : ControllerBase

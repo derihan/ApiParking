@@ -11,8 +11,9 @@ namespace ApiParking.Data.Area
         List<MgParkingArea> GetAllArea();
         MgParkingArea GetAreaById(int id);
         void CreateArea(MgParkingArea mg_areas);
-        MgParkingArea CheckData(int number, int katid);
+        int CheckData(MgParkingArea _ares);
         void UpdateArea(Dictionary<String, int> data);
         bool DeleteArea(int id);
+        List<MgParkingArea> GetFilter(string filter);
     }
 }

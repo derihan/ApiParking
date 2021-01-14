@@ -40,6 +40,7 @@ namespace ApiParking.Data.Area
                             AreaNumber = tbarea.AreaNumber,
                             Kategori = tbkat.KatAreaName,
                             FeesId = tbarea.AreaParkingFeesId,
+                            KatNumber = tbkat.KatNumber,
                             KategoriId = tbkat.KatiAreaId,
                             AreaCreatedAt = tbarea.AreaCreatedAt,
                         })
@@ -54,7 +55,8 @@ namespace ApiParking.Data.Area
                             FeesId = b.ParkFeesId,
                             AreaKategoriId = a.KategoriId,
                             Kategori = a.Kategori,
-                            AreaCreatedAt = a.AreaCreatedAt
+                            AreaCreatedAt = a.AreaCreatedAt,
+                            KatNumber = a.KatNumber
                         })
                         .ToList();
 
@@ -70,6 +72,7 @@ namespace ApiParking.Data.Area
                     AreaCreatedAt = item.AreaCreatedAt,
                     AreaKategoriId = item.AreaKategoriId,
                     AreaParkingFeesId = item.FeesId,
+                    katNumber = item.KatNumber,
                     kategori = item.Kategori,
                     FessVal = item.FeesValue
                 };
@@ -91,6 +94,7 @@ namespace ApiParking.Data.Area
                            Kategori = tbkat.KatAreaName,
                            FeesId = tbarea.AreaParkingFeesId,
                            AreaCreatedAt = tbarea.AreaCreatedAt,
+                           katNumber = tbkat.KatNumber,
                        })
                    .Join(_context.MdParkingFees,
                        a => a.FeesId,
@@ -101,22 +105,24 @@ namespace ApiParking.Data.Area
                            AreaNumber = a.AreaNumber,
                            FeesValue = b.ParkFeesValue,
                            Kategori = a.Kategori,
-                           AreaCreatedAt = a.AreaCreatedAt
+                           AreaCreatedAt = a.AreaCreatedAt,
+                           katNumber = a.katNumber
                        }).Where(p => p.AreaId == id).FirstOrDefault();
 
             return new MgParkingArea
             {
                 AreaId = areadata.AreaId,
                 AreaNumber = areadata.AreaNumber,
+                katNumber = areadata.katNumber,
                 kategori = areadata.Kategori,
                 FessVal = areadata.FeesValue
             };
         }
 
         
-        public MgParkingArea CheckData(int number, int katid)
+        public int CheckData(MgParkingArea _ares)
         {
-            return _context.MgParkingArea.FirstOrDefault(p=> p.AreaNumber == number && p.AreaKategoriId == katid);
+            return _context.MgParkingArea.Where(p=> p.AreaNumber.Equals(_ares.AreaNumber) && p.AreaKategoriId.Equals(_ares.AreaKategoriId) && p.AreaId.Equals(_ares.AreaId) ).Count();
         }
 
         public bool SaveChanges()
@@ -142,6 +148,62 @@ namespace ApiParking.Data.Area
                 return SaveChanges();
             }
             return false;
+        }
+
+        public List<MgParkingArea> GetFilter(string filter)
+        {
+            List<MgParkingArea> genericArea = new List<MgParkingArea>();
+            MgParkingArea areaObject;
+            var comparedata = DateTime.Now.ToShortDateString();
+            var areadata = _context.MgParkingArea
+                    .Join(_context.MdKategoriArea,
+                        tbarea => tbarea.AreaKategoriId,
+                        tbkat => tbkat.KatiAreaId,
+                        (tbarea, tbkat) => new
+                        {
+                            AreaId = tbarea.AreaId,
+                            AreaNumber = tbarea.AreaNumber,
+                            Kategori = tbkat.KatAreaName,
+                            FeesId = tbarea.AreaParkingFeesId,
+                            KatNumber = tbkat.KatNumber,
+                            KategoriId = tbkat.KatiAreaId,
+                            AreaCreatedAt = tbarea.AreaCreatedAt,
+                        })
+                    .Join(_context.MdParkingFees,
+                        a => a.FeesId,
+                        b => b.ParkFeesId,
+                        (a, b) => new
+                        {
+                            AreaId = a.AreaId,
+                            AreaNumber = a.AreaNumber,
+                            FeesValue = b.ParkFeesValue,
+                            FeesId = b.ParkFeesId,
+                            AreaKategoriId = a.KategoriId,
+                            Kategori = a.Kategori,
+                            AreaCreatedAt = a.AreaCreatedAt,
+                            KatNumber = a.KatNumber
+                        }).Where(vc => vc.AreaNumber.ToString().Contains(filter) || vc.FeesValue.ToString().Contains(filter) || vc.Kategori.Contains(filter) )
+                        .ToList();
+
+
+
+            foreach (var item in areadata)
+            {
+
+                areaObject = new MgParkingArea
+                {
+                    AreaId = item.AreaId,
+                    AreaNumber = item.AreaNumber,
+                    AreaCreatedAt = item.AreaCreatedAt,
+                    AreaKategoriId = item.AreaKategoriId,
+                    AreaParkingFeesId = item.FeesId,
+                    katNumber = item.KatNumber,
+                    kategori = item.Kategori,
+                    FessVal = item.FeesValue
+                };
+                genericArea.Add(areaObject);
+            }
+            return genericArea;
         }
     }
 }

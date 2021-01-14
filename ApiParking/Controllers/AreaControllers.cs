@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using System.Text.RegularExpressions;
 
 namespace ApiParking.Controllers
 {
@@ -22,6 +23,7 @@ namespace ApiParking.Controllers
         private readonly ISlotRepo _slotrepo;
         private string message;
         private int states;
+        private int state;
         private kparkingContext _context;
         private IConfiguration _config;
         private MgParkingArea getItem;
@@ -65,8 +67,8 @@ namespace ApiParking.Controllers
         public ActionResult CreateArea(MgParkingArea mgParkingArea)
         {
             
-            var mark = _repository.CheckData(mgParkingArea.AreaNumber, mgParkingArea.AreaKategoriId);
-            if (mark == null)
+            var mark = _repository.CheckData(mgParkingArea);
+            if (mark < 1 )
             {
                
                 var trasnsaction = _context.Database.BeginTransaction();
@@ -102,6 +104,19 @@ namespace ApiParking.Controllers
             return NotFound();
         }
 
+        [HttpGet("sort/{filter}")]
+       
+        public ActionResult FilterArea(string filter)
+        {
+            var fiktesan = Regex.Replace(filter, "[^A-Za-z0-9_.]", " ");
+            var commandItems = _repository.GetFilter(fiktesan);
+            if (commandItems != null)
+            {
+                return StatusCode(200, new {  data = commandItems } );
+            }
+            return NotFound();
+        }
+
         [HttpPut("{id}")]
         public ActionResult UpdateArea(int id, MgParkingArea mgParkingArea)
         {
@@ -115,8 +130,9 @@ namespace ApiParking.Controllers
                 }
                 else
                 {
-                    var cmdex = _repository.CheckData(_data.AreaNumber, _data.AreaKategoriId);
-                    if (cmdex == null)
+                    var cmdex = _repository.CheckData(_data);
+                    Console.WriteLine(cmdex);
+                    if (cmdex < 1)
                     {
                         var store = new Dictionary<String, int>();
 
@@ -132,23 +148,25 @@ namespace ApiParking.Controllers
                         {
                             message = "update succesfull";
                             states = 200;
+                            state = 1;
                         }
                         else
                         {
                             message = "failed to update";
-                            states = 404;
+                            states = 200;
+                            state = 0;
+
                         }
 
-                        return StatusCode(states, new { alert = message });
+                        return StatusCode(states, new { alert = message, state = state });
                     }
-                    return StatusCode(200, new { alert = "Data exist" });
+                    return StatusCode(200, new { alert = "Data exist", state = 0 });
                 }
             }
             return NotFound();
         }
 
         [HttpDelete("{id}")]
-
         public ActionResult DeleteArea(int id)
         {
            
