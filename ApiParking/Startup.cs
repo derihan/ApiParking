@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using ApiParking.Data.income;
 
 namespace ApiParking
 {
@@ -89,6 +90,7 @@ namespace ApiParking
             services.AddScoped<IUserRepository, SqlUser>();
             services.AddScoped<ICarsRepository, SqlCars>();
             services.AddScoped<IHistoryRepocs, SqlHistory>();
+            services.AddScoped<IncomeRepisitory, SqlIncome>();
 
             services.AddSwaggerGen(c =>
             {

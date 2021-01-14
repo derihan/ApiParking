@@ -23,6 +23,7 @@ namespace ApiParking.Data
         public virtual DbSet<MgUserParking> MgUserParking { get; set; }
         public virtual DbSet<ParkingOtp> ParkingOtp { get; set; }
     
+        public DbSet<IncoemModels> Incoems { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
