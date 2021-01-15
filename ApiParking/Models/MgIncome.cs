@@ -16,5 +16,18 @@ namespace ApiParking.Models
 
         [NotMapped]
         public string HistKode { get; set; }
+
+        [NotMapped]
+        public string HistAreaId { get; set; }
+
+        [NotMapped]
+        public string user_fullname { get; set; }
+
+        [NotMapped]
+        [Column("hist_in")]
+        public DateTime hist_in { get; set; }
+        [NotMapped]
+        [Column("hist_out")]
+        public DateTime hist_out { get; set; }
     }
 }

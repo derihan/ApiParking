@@ -145,7 +145,8 @@ namespace ApiParking.Data
                     .HasColumnName("income_sts")
                     .HasColumnType("int(2)");
 
-                entity.Property(e => e.IncomeValue).HasColumnName("income_value");
+                entity.Property(e => e.IncomeValue).HasColumnName("income_value").HasColumnType("int(9)");
+
             });
 
             modelBuilder.Entity<MgParkHistory>(entity =>

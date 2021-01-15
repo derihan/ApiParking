@@ -24,9 +24,14 @@ namespace ApiParking.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult<IEnumerable<MgIncome>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var comand = _income.getAll();
+            if (comand != null)
+            {
+                return Ok(new { data = comand });
+            }
+            return NotFound();
         }
 
         // GET api/<ValuesController>/5
@@ -36,15 +41,30 @@ namespace ApiParking.Controllers
             if (kode != null)
             {
                var data = _income.AddIncomebyId(kode);
-                return StatusCode(200, new { data = data });
+                return StatusCode(200,data);
             }
             return NotFound();
         }
 
         // POST api/<ValuesController>
         [HttpPost]
-        public void Post(MgIncome income)
+        public ActionResult Post(MgIncome income)
         {
+
+            if (ModelState.IsValid)
+            {
+
+                var data = _income.SaveDataIncome(income);
+
+                if (data)
+                {
+                    return Ok();
+                }
+
+                return NotFound();
+
+            }
+            return NotFound();
         }
 
        

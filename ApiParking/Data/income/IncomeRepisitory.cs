@@ -8,11 +8,10 @@ namespace ApiParking.Data.income
 {
     public interface IncomeRepisitory
     {
-        object getIncomeData();
+     
+        IncoemModels AddIncomebyId(string kode);
 
-        object AddIncomebyId(string kode);
-
-        bool SaveDataIncome(MgIncome income); 
-
+        bool SaveDataIncome(MgIncome income);
+        IEnumerable<IncoemModels> getAll();
     }
 }
