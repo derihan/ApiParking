@@ -94,14 +94,19 @@ namespace ApiParking.Data.income
 
         public bool SaveDataIncome(MgIncome income)
         {
-            var history = _context.MgParkHistory.First(cv => cv.HistId.Equals(income.HistId) && cv.HistoryKode.Contains(income.HistKode));
-          
-            if (history != null)
+            var history = _context.MgParkHistory.FromSqlRaw("Select * from mg_park_history where hist_kode={0}",income.HistKode).ToList()[0];
+
+
+
+            if (history.HistAreaId != null)
             {
-                var slotId = _context.MgParkingSlot.First(cv => cv.ParAreaId.Equals(Convert.ToInt32(history.HistAreaId)));
-                var userid = _context.MgUserParking.First(cv => cv.UserId.Equals(Convert.ToInt32(history.ParkUserId)));
+
+                var slotId = _context.MgParkingSlot.FirstOrDefault(cv => cv.ParAreaId.ToString() == history.HistAreaId);
+
+                var userid = _context.MgUserParking.FirstOrDefault(cv => cv.UserId.ToString() == slotId.ParkSlotUserId);
 
                 history.HistOut = DateTime.Now;
+                history.ParkUserId = history.ParkUserId;
                 history.HistSts = 2;
                 _context.SaveChanges();
 
@@ -135,7 +140,7 @@ namespace ApiParking.Data.income
             var sbc = _context.Incoems.FromSqlRaw("SELECT ic.income_sts,ht.hist_id,ic.income_id,ic.income_value,ic.income_created_at, " +
                 "ht.hist_kode,ht.hist_in,ht.hist_out,ht.hist_created_atd, op.user_fullname " +
                 "FROM mg_income ic JOIN mg_park_history ht on ic.hist_id=ht.hist_id " +
-                "JOIN mg_user_parking op on op.user_id=ht.park_user_id").ToList();
+                "LEFT JOIN mg_user_parking op on op.user_id=ht.park_user_id").ToList();
 
             List<IncoemModels> bcv = new List<IncoemModels>();
 

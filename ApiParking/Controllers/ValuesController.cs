@@ -50,8 +50,9 @@ namespace ApiParking.Controllers
         [HttpPost]
         public ActionResult Post(MgIncome income)
         {
-
-            if (ModelState.IsValid)
+            Console.WriteLine(income.HistId);
+            Console.WriteLine(income.HistKode);
+            if (income != null)
             {
 
                 var data = _income.SaveDataIncome(income);
@@ -62,8 +63,9 @@ namespace ApiParking.Controllers
                 }
 
                 return NotFound();
-
             }
+
+
             return NotFound();
         }
 
