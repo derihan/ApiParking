@@ -65,7 +65,7 @@ namespace ApiParking.Data.income
                     dso.hist_kode = rdr.GetString("hist_kode").ToString();
                     dso.hist_in = rdr.GetDateTime("hist_in");
                     dso.user_fullname = rdr.GetString("user_fullname").ToString();
-                    dso.income_value = (hours.Hours + 0.4 ) > 1 ? (int)(rdr.GetInt32("park_fees_value")) * hours.Hours : (int)(rdr.GetInt32("park_fees_value"));
+                    dso.income_value = hours.Hours > 1 ? (int)(rdr.GetInt32("park_fees_value")) * hours.Hours : (int)(rdr.GetInt32("park_fees_value"));
 
                 
                     
