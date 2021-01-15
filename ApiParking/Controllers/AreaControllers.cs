@@ -155,7 +155,6 @@ namespace ApiParking.Controllers
                             message = "failed to update";
                             states = 200;
                             state = 0;
-
                         }
 
                         return StatusCode(states, new { alert = message, state = state });

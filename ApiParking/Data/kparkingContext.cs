@@ -137,7 +137,9 @@ namespace ApiParking.Data
 
                 entity.Property(e => e.IncomeCreatedAt)
                     .HasColumnName("income_created_at")
-                    .HasColumnType("int(2)");
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate();
 
                 entity.Property(e => e.IncomeSts)
                     .HasColumnName("income_sts")

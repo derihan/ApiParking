@@ -86,6 +86,48 @@ namespace ApiParking.Data.income
         {
             throw new NotImplementedException();
         }
+
+        private bool SaveChanges()
+        {
+            return (_context.SaveChanges() >= 0);
+        }
+
+        public bool SaveDataIncome(MgIncome income)
+        {
+            var history = _context.MgParkHistory.First(cv => cv.HistId.Equals(income.HistId) && cv.HistoryKode.Contains(income.HistKode));
+          
+            if (history != null)
+            {
+                var slotId = _context.MgParkingSlot.First(cv => cv.ParAreaId.Equals(history.HistAreaId));
+                var userid = _context.MgUserParking.First(cv => cv.UserId.Equals(history.ParkUserId));
+
+                history.HistOut = DateTime.Now;
+                history.HistSts = 2;
+                _context.SaveChanges();
+
+                if (slotId != null)
+                {
+                    slotId.ParkSlotUserId = String.Empty;
+                    slotId.ParkSlotSts = 1;
+                    _context.SaveChanges();
+                }
+
+                if (userid != null)
+                {
+                    userid.UsersSts = 1;
+                    _context.SaveChanges();
+                }
+
+                MgIncome pso = new MgIncome();
+                pso.HistId = history.HistId;
+                pso.IncomeValue = income.IncomeValue;
+                _context.Add(pso);
+                return SaveChanges();
+
+            }
+
+            return false;
+        }
     }
 
  } 

@@ -107,8 +107,8 @@ namespace ApiParking.Data.Slot
             try
             {
                 conn.Open();
-                string sql = "SELECT us.user_id,ds.par_slot_id,ds.park_slot_status,ds.park_slot_sts,od.area_number,sc.kat_area_name,sc.kat_number, " +
-                    "ds.park_slot_user_id, us.user_username, " +
+                string sql = "SELECT cv.park_fees_value,us.user_id,ds.par_slot_id,ds.park_slot_status,ds.park_slot_sts,od.area_number,sc.kat_area_name,sc.kat_number, " +
+                    "ds.park_slot_user_id, us.user_username,us.user_fullname, " +
                     "(SELECT DA.park_car_licence FROM mg_parking_user_car da " +
                     "WHERE da.park_car_user_id=us.user_id and da.park_car_created_at " +
                     "BETWEEN CONCAT(CURRENT_DATE,' 05:00:00') and CONCAT(CURRENT_DATE, ' 23:00:00') " +
@@ -136,7 +136,8 @@ namespace ApiParking.Data.Slot
                     dso.park_slot_user_id = (rdr["park_slot_user_id"] == DBNull.Value) ? String.Empty : rdr.GetString("park_slot_user_id").ToString();
                     dso.par_slot_id = (int)rdr.GetInt32("par_slot_id");
                     dso.user_username = (rdr["user_username"] == DBNull.Value) ? String.Empty : rdr.GetString("user_username").ToString();
-
+                    dso.park_fees_value = (int)rdr.GetInt32("park_fees_value");
+                    dso.user_fullname = (rdr["user_fullname"] == DBNull.Value) ? String.Empty : rdr.GetString("user_fullname").ToString();
                     slm.Add(dso);
 
                 }

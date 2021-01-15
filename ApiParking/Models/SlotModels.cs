@@ -20,7 +20,11 @@ namespace ApiParking.Models
         public string park_slot_user_id { get; set; }
         public string user_username { get; set; }
 
-       [NotMapped]
+        [NotMapped]
         public string park_car_license { get; set; }
+        [NotMapped]
+        public int park_fees_value { get; set; }
+        [NotMapped]
+        public string user_fullname { get; set; }
     }
 }
